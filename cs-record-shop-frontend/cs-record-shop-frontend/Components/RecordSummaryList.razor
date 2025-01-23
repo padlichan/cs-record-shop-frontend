@@ -1,0 +1,15 @@
+﻿@using cs_record_shop_frontend.Models;
+<h3>Records</h3>
+
+@if(albums != null)
+{
+    foreach(var album in albums)
+    {
+        <RecordSummary album="album"></RecordSummary>
+    }
+}
+
+@code 
+{
+    [Parameter] public List<Album>? albums { get; set; }
+}

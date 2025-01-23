@@ -1,0 +1,12 @@
+﻿@using cs_record_shop_frontend.Models;
+<section>
+    <h3>Title: @album.Title</h3>
+    <p>Year: @album.Year</p>
+    <p>Artist: @album.ArtistName</p>
+    <p>Description: @album.Description</p>
+
+</section>
+
+@code {
+    [Parameter] public Album album { get; set; }
+}
