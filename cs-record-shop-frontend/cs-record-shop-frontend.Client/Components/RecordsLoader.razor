@@ -1,0 +1,12 @@
+﻿
+<RecordSummaryList albums="albums"></RecordSummaryList>
+
+@code {
+    private List<Album>? albums = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        using HttpClient httpClient = new HttpClient();
+        albums = await httpClient.GetFromJsonAsync<List<Album>>("https://localhost:7223/albums");
+    }
+}

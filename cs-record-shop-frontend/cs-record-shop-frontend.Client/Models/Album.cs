@@ -1,4 +1,4 @@
-﻿namespace cs_record_shop_frontend.Models;
+﻿namespace cs_record_shop_frontend.Client.Models;
 public class Album
 {
     public Album(int id, string title, string description, int year, string artistName)
