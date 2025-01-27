@@ -1,0 +1,47 @@
+﻿@using System.Text.Json;
+
+@if(album != null)
+{
+    <RecordDetails album="album" OnSubmit="OnValidSubmit"></RecordDetails>
+}
+@if (isSubmitted)
+{
+    <p>Submitted!</p>
+}
+<p>@response</p>
+
+@code {
+    private Album? album;
+    private string response = "";
+    private bool isSubmitted;
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using HttpClient httpClient = new HttpClient();
+        try
+        {
+            album = await httpClient.GetFromJsonAsync<Album>($"https://localhost:7223/albums/{Id}");
+        }
+        catch(Exception ex)
+        {
+            response = $"Error: {ex.Message}";
+        }
+    }
+
+    public async void OnValidSubmit(AlbumInputDto updatedAlbumDto)
+    {
+        isSubmitted = true;
+        HttpClient client = new HttpClient();
+        try
+        {
+            Console.WriteLine(JsonSerializer.Serialize(updatedAlbumDto));
+            var result = await client.PutAsJsonAsync($"https://localhost:7223/albums/{album.Id}", updatedAlbumDto);
+            response = await result.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            response = $"Error: {ex.Message}";
+        }
+    }
+}

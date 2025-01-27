@@ -1,80 +1,56 @@
 ﻿<h3>Edit record details</h3>
-@if (@testAlbum == null)
+@if (album == null)
 {
     <p> Could not load album.</p>
 }
 else
 {
-    <table>
-        <tr>
-            <td>Title: </td>
-            <td><InputText @bind-Value="inputTitle"></InputText></td>
-        </tr>
-        <tr>
-            <td>Year: </td>
-            <td><InputText @bind-Value="inputYear"></InputText></td>
-        </tr>
-        <tr>
-            <td>Artist: </td>
-            <td>@inputArtist</td>
-        </tr>
-        <tr>
-            <td>Description: </td>
-            <td><InputTextArea @bind-Value="inputDescription"></InputTextArea></td>
-        </tr>
-    </table>
-    <button @onclick="CheckDetails">Submit</button>
+
+    <EditForm FormName="ExampleForm" Model="@updatedAlbumDto" OnValidSubmit="HandleValidSubmit">
+        <div>
+            <label>Title</label>
+            <InputText id="title" @bind-Value="updatedAlbumDto.Title"></InputText>
+        </div>
+        <div>
+        <label>Year</label>
+        <InputNumber id="year" @bind-Value="updatedAlbumDto.Year"></InputNumber>
+        </div>
+        <div>
+            <label>Artist</label>
+            <InputText id="artistName" @bind-Value="updatedAlbumDto.ArtistName"></InputText>
+        </div>
+        <div>
+            <label>Description</label>
+            <InputTextArea id ="description" @bind-Value="updatedAlbumDto.Description"></InputTextArea>
+        </div>
+    <button type="Submit">Submit</button> 
+    </EditForm>
 }
-@if(isSubmitted)
+
+
+    <p>@response</p>
+
+
+
+@code 
 {
-    <p>Submitted!</p>
-}
-
-
-@code {
     [Parameter] public Album? album { get; set; }
-    //[Parameter] public EventCallback<AlbumInputDto> OnSubmit { get; set; }
+    [Parameter] public EventCallback<AlbumInputDto?> OnSubmit { get; set; }
+    private string response = ""; 
 
-    private string? inputTitle;
-    private string? inputDescription;
-    private string? inputYear;
-    private string inputArtist = "";
-    private bool isSubmitted = false;
-
-    public Album testAlbum { get; set; } = new Album(1, "Fourth Album", "This is a rad album", 2005, "Lil' Artist");
+    public AlbumInputDto? updatedAlbumDto;
 
     protected override void OnInitialized()
     {
-        InitializeInputFields();
-    }
-
-    private void InitializeInputFields()
-    {
-        if (testAlbum != null)
+        if(album != null)
         {
-            inputTitle = testAlbum.Title;
-            inputArtist = testAlbum.ArtistName;
-            inputYear = testAlbum.Year.ToString();
-            inputDescription = testAlbum.Description;
+            updatedAlbumDto = new AlbumInputDto(album.Title, album.Year, album.ArtistName, album.Description);
         }
     }
 
-    private void CheckDetails()
+    private async Task HandleValidSubmit()
     {
-        StateHasChanged();
-        if (!int.TryParse(inputYear, out int year))
-        {
-            Console.WriteLine("Invalid year");
-            return;
-        }
-        if (string.IsNullOrEmpty(inputTitle) || string.IsNullOrEmpty(inputDescription))
-        {
-            Console.WriteLine("Title, or Description");
-            return;
-        }
-
-        isSubmitted = true;
-        AlbumInputDto updatedAlbum = new AlbumInputDto(inputTitle, inputDescription, year, 1);
+        await OnSubmit.InvokeAsync(updatedAlbumDto);
     }
 }
 

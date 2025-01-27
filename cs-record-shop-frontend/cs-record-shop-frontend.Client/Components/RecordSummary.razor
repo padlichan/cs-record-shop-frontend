@@ -1,8 +1,16 @@
-﻿<section>
-    <h3>Title: @album.Title</h3>
+﻿@inject NavigationManager Navigation
+
+<section>
+    <h3>@album.Title</h3>
     <p>Year: @album.Year</p>
+    <button @onclick="GoToRecordPage">Edit</button>
 </section>
 
 @code {
     [Parameter] public required Album album { get; set; }
+
+    private void GoToRecordPage()
+    {
+        Navigation.NavigateTo($"records/{album.Id}");
+    }
 }
